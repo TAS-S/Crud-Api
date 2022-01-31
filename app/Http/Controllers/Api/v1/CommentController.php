@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
-use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCommentRequest;
+use App\Http\Resources\v1\CommentResource;
 use App\Http\Requests\UpdateCommentRequest;
 
 class CommentController extends Controller
@@ -16,7 +17,7 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
+        return CommentResource::collection(Comment::paginate());
     }
 
     /**
@@ -27,7 +28,9 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request)
     {
-        //
+        $comment = Comment::create($request->all());
+
+        return new CommentResource($comment);
     }
 
     /**
@@ -38,7 +41,7 @@ class CommentController extends Controller
      */
     public function show(Comment $comment)
     {
-        //
+        return new CommentResource($comment);
     }
 
     /**
@@ -50,7 +53,9 @@ class CommentController extends Controller
      */
     public function update(UpdateCommentRequest $request, Comment $comment)
     {
-        //
+        $comment->update($request->all());
+
+        return new CommentResource($comment);
     }
 
     /**
@@ -61,6 +66,6 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+        $comment->delete();
     }
 }
