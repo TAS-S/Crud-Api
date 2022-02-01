@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Comment;
+use App\Http\Requests\StoreCommentRequest;
+use App\Http\Requests\UpdateCommentRequest;
 
 class CommentController extends Controller
 {
@@ -13,7 +15,9 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
+        $comment = Comment::paginate(10);
+
+        return view('comments.index', compact('comment'));
     }
 
     /**
@@ -23,7 +27,7 @@ class CommentController extends Controller
      */
     public function create()
     {
-        //
+        return view('comments.create');
     }
 
     /**
@@ -32,9 +36,17 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCommentRequest $request)
     {
-        //
+        $comment = new Comment;
+
+        $comment->post_id = $request->post_id;
+        $comment->content = $request->content;
+        $comment->author = $request->author;
+
+        $comment->save();
+
+        return redirect()->back()->with('message', 'Comment added successfully.');
     }
 
     /**
@@ -56,7 +68,8 @@ class CommentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $comment = Comment::find($id);
+        return view('comments.edit', compact('comment'));
     }
 
     /**
@@ -66,9 +79,17 @@ class CommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateCommentRequest $request, $id)
     {
-        //
+        $comment = Comment::find($id);
+
+        $comment->post_id = $request->post_id;
+        $comment->content = $request->content;
+        $comment->author = $request->author;
+
+        $comment->update();
+
+        return redirect()->back()->with('message', 'Comment updated successfully.');
     }
 
     /**
@@ -79,6 +100,9 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $comment = Comment::find($id);
+        $comment->delete();
+
+        return redirect()->back()->with('message', 'Comment deleted successfully.');
     }
 }
