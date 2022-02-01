@@ -16,15 +16,21 @@ use App\Http\Controllers\Api\v1\CommentController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('v1')->group(function(){
+        Route::apiResource('posts', PostController::class);
+        Route::apiResource('comments', CommentController::class);
+    });
 });
 
-Route::prefix('v1')->group(function(){
-    Route::apiResource('posts', PostController::class);
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::prefix('v1')->group(function(){
-    Route::apiResource('comments', CommentController::class);
-});
+// Route::prefix('v1')->group(function(){
+//     Route::apiResource('posts', PostController::class);
+//     Route::apiResource('comments', CommentController::class);
+// });
+
+
 
